@@ -1,7 +1,9 @@
-import React from 'react';
 import { Mail, ArrowRight } from 'lucide-react';
 import EditableText from './EditableText';
 import { usePageContent } from '../hooks/usePageContent';
+import { useGlobalSettings } from '../hooks/useGlobalSettings';
+import { useState } from 'react';
+import { submitContactForm } from '../utils/formHandler';
 
 const Footer = () => {
   const { content } = usePageContent('home', {
@@ -11,6 +13,32 @@ const Footer = () => {
     footerBy: 'by Kapil Kosare',
     footerCopyright: 'Creatisk Agency. All rights reserved.'
   });
+
+  const { settings } = useGlobalSettings();
+  const [formData, setFormData] = useState({ name: '', email: '', message: '' });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [status, setStatus] = useState({ type: '', message: '' });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setStatus({ type: '', message: '' });
+
+    const result = await submitContactForm(formData, 'footer_cta', settings.notificationEmails);
+    
+    if (result.success) {
+      setStatus({ type: 'success', message: 'Message sent!' });
+      setFormData({ name: '', email: '', message: '' });
+    } else {
+      setStatus({ type: 'error', message: result.message || 'Error. Try again.' });
+    }
+    setIsSubmitting(false);
+  };
 
   return (
     <>
@@ -43,14 +71,55 @@ const Footer = () => {
                 style={{ color: 'var(--text-muted)', fontSize: '1.1rem', lineHeight: 1.7 }} 
               />
             </div>
-            <form style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }} onSubmit={e => e.preventDefault()}>
-              <input type="text" placeholder="Your Name" className="input-glass" />
-              <input type="email" placeholder="Your Email" className="input-glass" />
-              <textarea placeholder="Tell us about your project..." className="input-glass" rows="4" style={{ resize: 'none' }} />
-              <button type="submit" className="btn-primary" style={{ justifyContent: 'center', padding: '1.1rem' }}>
-                Send Message <ArrowRight size={18} />
-              </button>
-            </form>
+            <div style={{ position: 'relative' }}>
+              {status.type === 'success' ? (
+                <div style={{ textAlign: 'center', padding: '1rem', background: 'rgba(190, 242, 100, 0.1)', borderRadius: '20px' }}>
+                  <p style={{ color: '#BEF264', fontWeight: 700, marginBottom: '0.5rem' }}>Message Sent!</p>
+                  <p style={{ fontSize: '0.8rem', opacity: 0.7 }}>We'll be in touch soon.</p>
+                  <button onClick={() => setStatus({ type: '', message: '' })} style={{ marginTop: '1rem', background: 'none', border: 'none', color: '#fff', textDecoration: 'underline', cursor: 'pointer', fontSize: '0.8rem' }}>Send Another</button>
+                </div>
+              ) : (
+                <form style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }} onSubmit={handleSubmit}>
+                  <input 
+                    type="text" 
+                    name="name"
+                    required
+                    placeholder="Your Name" 
+                    value={formData.name}
+                    onChange={handleChange}
+                    className="input-glass" 
+                  />
+                  <input 
+                    type="email" 
+                    name="email"
+                    required
+                    placeholder="Your Email" 
+                    value={formData.email}
+                    onChange={handleChange}
+                    className="input-glass" 
+                  />
+                  <textarea 
+                    name="message"
+                    required
+                    placeholder="Tell us about your project..." 
+                    value={formData.message}
+                    onChange={handleChange}
+                    className="input-glass" 
+                    rows="4" 
+                    style={{ resize: 'none' }} 
+                  />
+                  {status.type === 'error' && <div style={{ color: '#FF3366', fontSize: '0.8rem' }}>{status.message}</div>}
+                  <button 
+                    type="submit" 
+                    className="btn-primary" 
+                    disabled={isSubmitting}
+                    style={{ justifyContent: 'center', padding: '1.1rem', opacity: isSubmitting ? 0.7 : 1 }}
+                  >
+                    {isSubmitting ? 'Sending...' : 'Send Message'} <ArrowRight size={18} />
+                  </button>
+                </form>
+              )}
+            </div>
           </div>
         </div>
       </section>

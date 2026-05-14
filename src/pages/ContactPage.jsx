@@ -3,7 +3,10 @@ import { Mail, Phone, MapPin, Send, MessageCircle, ArrowRight, Sparkles, Globe, 
 import ThemeToggle from '../components/ThemeToggle';
 import EditableText from '../components/EditableText';
 import { usePageContent } from '../hooks/usePageContent';
+import { useGlobalSettings } from '../hooks/useGlobalSettings';
 import PageLoader from '../components/PageLoader';
+import { submitContactForm } from '../utils/formHandler';
+import { useState } from 'react';
 
 const ContactPage = () => {
   const { content, loading } = usePageContent('contact', {
@@ -18,15 +21,43 @@ const ContactPage = () => {
     globalTitle: 'Global Footprint.',
     globalSub: 'We operate as a remote-first agency with a team spanning 4 continents. Distance is never a barrier to brilliance.'
   });
+
+  const { settings } = useGlobalSettings();
+  const [formData, setFormData] = useState({ name: '', email: '', budget: '', message: '' });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [status, setStatus] = useState({ type: '', message: '' });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setStatus({ type: '', message: '' });
+
+    const result = await submitContactForm(formData, 'contact_page', settings.notificationEmails);
+    
+    if (result.success) {
+      setStatus({ type: 'success', message: 'Message sent successfully!' });
+      setFormData({ name: '', email: '', budget: '', message: '' });
+    } else {
+      setStatus({ type: 'error', message: result.message || 'Something went wrong. Please try again.' });
+    }
+    setIsSubmitting(false);
+  };
   
+  const isLight = settings.theme === 'light';
+
   if (loading) return <PageLoader />;
 
   return (
-    <div style={{ background: 'transparent', color: '#fff', minHeight: '100vh', padding: '12rem 0 0', width: '100%', overflowX: 'hidden', position: 'relative' }}>
+    <div style={{ background: 'transparent', color: 'var(--text-main)', minHeight: '100vh', padding: '12rem 0 0', width: '100%', overflowX: 'hidden', position: 'relative' }}>
       <ThemeToggle />
       {/* Dynamic Background Elements */}
-      <div className="orb orb-pink" style={{ top: '10%', right: '-10%', width: '600px', height: '600px', opacity: 0.2 }} />
-      <div className="orb orb-purple" style={{ bottom: '20%', left: '-20%', width: '900px', height: '900px', opacity: 0.15 }} />
+      <div className="orb orb-pink" style={{ top: '10%', right: '-10%', width: '600px', height: '600px', opacity: isLight ? 0.05 : 0.2 }} />
+      <div className="orb orb-purple" style={{ bottom: '20%', left: '-20%', width: '900px', height: '900px', opacity: isLight ? 0.04 : 0.15 }} />
 
       <div className="container" style={{ position: 'relative', zIndex: 1 }}>
         
@@ -47,7 +78,8 @@ const ContactPage = () => {
               marginBottom: '3rem',
               background: 'linear-gradient(to right, var(--text-main), var(--text-muted))',
               WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent'
+              WebkitTextFillColor: 'transparent',
+              color: 'var(--text-main)' // Fallback
             }} 
           />
           <EditableText 
@@ -67,7 +99,6 @@ const ContactPage = () => {
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem', marginBottom: '5rem' }}>
               {[
                 { icon: <Mail />, label: 'Email', val: 'hello@creatisk.in', color: '#FF3366' },
-                { icon: <MessageCircle />, label: 'WhatsApp', val: '+1 (555) 000-0000', color: '#25D366' },
                 { icon: <Clock />, label: 'Response Time', val: 'Within 24 Hours', color: '#00E5FF' },
                 { icon: <Calendar />, label: 'Office Hours', val: 'Mon - Fri, 9am - 6pm', color: '#FF9933' }
               ].map((item, i) => (
@@ -108,42 +139,96 @@ const ContactPage = () => {
             </div>
           </div>
 
-          {/* Right Side: The Premium Form */}
           <div className="glass-strong" style={{ 
             padding: '5rem 4rem', 
             borderRadius: 48, 
-            border: '1px solid rgba(255,255,255,0.05)',
-            boxShadow: '0 40px 100px rgba(0,0,0,0.4)',
+            border: 'var(--glass-border)',
+            boxShadow: 'var(--card-shadow)',
+            background: 'var(--glass-bg-strong)',
             position: 'sticky',
             top: '120px'
           }}>
             <EditableText pageId="contact" fieldId="formTitle" initialText={content.formTitle} tagName="h3" style={{ fontSize: '2.5rem', fontWeight: 900, marginBottom: '3rem', letterSpacing: '-0.02em' }} />
-            <form style={{ display: 'flex', flexDirection: 'column', gap: '2.5rem' }}>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                  <label style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase' }}>Your Name</label>
-                  <input type="text" placeholder="John Wick" className="input-glass" style={{ width: '100%', fontSize: '1.1rem' }} />
+            
+            {status.type === 'success' ? (
+              <div style={{ textAlign: 'center', padding: '2rem' }}>
+                <div style={{ color: '#BEF264', marginBottom: '1.5rem' }}><CheckCircle2 size={64} style={{ margin: '0 auto' }} /></div>
+                <h3 style={{ fontSize: '2rem', marginBottom: '1rem' }}>Message Sent!</h3>
+                <p style={{ color: 'var(--text-muted)', fontSize: '1.1rem', marginBottom: '2rem' }}>Thank you for reaching out. Our team will get back to you within 24 hours.</p>
+                <button onClick={() => setStatus({ type: '', message: '' })} className="btn-primary" style={{ margin: '0 auto' }}>Send Another Message</button>
+              </div>
+            ) : (
+              <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '2.5rem' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '2rem' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                    <label style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase' }}>Your Name</label>
+                    <input 
+                      type="text" 
+                      name="name"
+                      required
+                      placeholder="John Wick" 
+                      value={formData.name}
+                      onChange={handleChange}
+                      className="input-glass" 
+                      style={{ width: '100%', fontSize: '1.1rem' }} 
+                    />
+                  </div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                    <label style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase' }}>Email Address</label>
+                    <input 
+                      type="email" 
+                      name="email"
+                      required
+                      placeholder="john@continental.com" 
+                      value={formData.email}
+                      onChange={handleChange}
+                      className="input-glass" 
+                      style={{ width: '100%', fontSize: '1.1rem' }} 
+                    />
+                  </div>
                 </div>
+
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                  <label style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase' }}>Email Address</label>
-                  <input type="email" placeholder="john@continental.com" className="input-glass" style={{ width: '100%', fontSize: '1.1rem' }} />
+                  <label style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase' }}>Estimated Budget</label>
+                  <input 
+                    type="text" 
+                    name="budget"
+                    placeholder="Enter your estimated budget" 
+                    value={formData.budget}
+                    onChange={handleChange}
+                    className="input-glass" 
+                    style={{ width: '100%', fontSize: '1.1rem' }} 
+                  />
                 </div>
-              </div>
 
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                <label style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase' }}>Estimated Budget</label>
-                <input type="text" placeholder="e.g. $10,000 or Open for discussion" className="input-glass" style={{ width: '100%', fontSize: '1.1rem' }} />
-              </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                  <label style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase' }}>Tell us about your vision</label>
+                  <textarea 
+                    name="message"
+                    required
+                    placeholder="The next big thing is..." 
+                    value={formData.message}
+                    onChange={handleChange}
+                    className="input-glass" 
+                    rows="6" 
+                    style={{ width: '100%', resize: 'none', fontSize: '1.1rem' }} 
+                  />
+                </div>
 
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                <label style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase' }}>Tell us about your vision</label>
-                <textarea placeholder="The next big thing is..." className="input-glass" rows="6" style={{ width: '100%', resize: 'none', fontSize: '1.1rem' }} />
-              </div>
+                {status.type === 'error' && (
+                  <div style={{ color: '#FF3366', fontSize: '0.9rem', fontWeight: 600 }}>{status.message}</div>
+                )}
 
-              <button type="submit" className="btn-primary" style={{ justifyContent: 'center', padding: '1.5rem', width: '100%', fontSize: '1.2rem', marginTop: '1rem' }}>
-                Send Proposal <ArrowRight size={24} />
-              </button>
-            </form>
+                <button 
+                  type="submit" 
+                  className="btn-primary" 
+                  disabled={isSubmitting}
+                  style={{ justifyContent: 'center', padding: '1.5rem', width: '100%', fontSize: '1.2rem', marginTop: '1rem', opacity: isSubmitting ? 0.7 : 1 }}
+                >
+                  {isSubmitting ? 'Sending Proposal...' : 'Send Proposal'} <ArrowRight size={24} />
+                </button>
+              </form>
+            )}
           </div>
         </div>
 

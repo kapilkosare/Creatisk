@@ -43,13 +43,17 @@ const AdminDashboard = () => {
       heroTitle: "Let's Talk Business.", 
       heroSub: 'Ready to start a revolution? Drop us a line and let\'s discuss how we can bring your vision to life.', 
       email: 'hello@creatisk.in', 
-      whatsapp: '+1 (555) 000-0000', 
       address: 'Global Operations', 
       formTitle: 'Project Planner' 
     }
   });
-  const [globalSettings, setGlobalSettings] = useState({ theme: 'dark', gradientIndex: 0 });
+  const [globalSettings, setGlobalSettings] = useState({ 
+    theme: 'dark', 
+    gradientIndex: 0,
+    notificationEmails: 'hello@creatisk.in, kapil.webfoxtech@gmail.com'
+  });
   const [projects, setProjects] = useState([]);
+  const [inquiries, setInquiries] = useState([]);
   const [editingProject, setEditingProject] = useState(null);
   const [projectForm, setProjectForm] = useState({ 
     title: '', category: '', imageUrl: '', link: '', 
@@ -75,6 +79,14 @@ const AdminDashboard = () => {
       if (settingsSnap.exists()) setGlobalSettings(settingsSnap.data());
       const querySnapshot = await getDocs(collection(db, 'projects'));
       setProjects(querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+      
+      const inquiriesSnapshot = await getDocs(collection(db, 'inquiries'));
+      setInquiries(inquiriesSnapshot.docs.map(doc => ({ 
+        id: doc.id, 
+        ...doc.data(),
+        timestamp: doc.data().timestamp?.toDate() || new Date()
+      })).sort((a, b) => b.timestamp - a.timestamp));
+
       if (activeTab === 'media') fetchMedia();
     } catch (error) { console.error(error); } finally { setLoading(false); }
   };
@@ -164,6 +176,7 @@ const AdminDashboard = () => {
             { id: 'portfolio', icon: <Folder size={18}/> },
             { id: 'projects', icon: <Target size={18}/> },
             { id: 'media', icon: <Images size={18}/> },
+            { id: 'inquiries', icon: <Mail size={18}/>, label: 'Mails' },
             { id: 'contact', icon: <Mail size={18}/> },
             { id: 'global', icon: <Palette size={18}/> }
           ].map(tab => (
@@ -184,7 +197,7 @@ const AdminDashboard = () => {
               onMouseLeave={(e) => { if(activeTab !== tab.id) e.currentTarget.style.background = 'transparent'; }}
             >
               {tab.icon} 
-              <span style={{ fontSize: '0.9rem' }}>{tab.id.charAt(0).toUpperCase() + tab.id.slice(1)}</span>
+              <span style={{ fontSize: '0.9rem' }}>{tab.label || tab.id.charAt(0).toUpperCase() + tab.id.slice(1)}</span>
             </button>
           ))}
         </div>
@@ -391,6 +404,25 @@ const AdminDashboard = () => {
                 </div>
               </div>
 
+              <h3 style={{ marginBottom: '1.5rem', color: '#BEF264', fontSize: '1rem', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Inquiry Notifications</h3>
+              <div style={{ 
+                background: 'rgba(255,255,255,0.03)', 
+                padding: '2rem', 
+                borderRadius: '20px', 
+                border: '1px solid var(--border-color)',
+                marginBottom: '3rem'
+              }}>
+                <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', fontWeight: 600 }}>Recipient Emails (Comma separated)</label>
+                <input 
+                  type="text" 
+                  value={globalSettings.notificationEmails || ''} 
+                  onChange={(e) => setGlobalSettings({...globalSettings, notificationEmails: e.target.value})}
+                  placeholder="hello@creatisk.in, kapil.webfoxtech@gmail.com"
+                  style={{ width: '100%', padding: '1rem', borderRadius: '12px', background: 'var(--bg-main)', border: '1px solid var(--border-color)', color: '#fff' }}
+                />
+                <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '0.5rem' }}>These emails will receive all form submissions from the website.</p>
+              </div>
+
               <button onClick={handleSaveGlobal} className="btn-primary" disabled={loading}>
                 {loading ? <Loader2 className="animate-spin" size={20}/> : <Save size={20}/>} Save Settings
               </button>
@@ -515,7 +547,77 @@ const AdminDashboard = () => {
               )}
             </div>
           )}
-          {activeTab !== 'projects' && activeTab !== 'global' && activeTab !== 'media' && (
+          {activeTab === 'inquiries' && (
+            <div className="glass-strong" style={{ padding: '3rem', borderRadius: '30px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3rem' }}>
+                <h3 style={{ margin: 0 }}>Form Inquiries ({inquiries.length})</h3>
+                <button onClick={fetchAllData} style={{ padding: '0.5rem 1rem', background: 'rgba(255,255,255,0.05)', border: 'none', borderRadius: '8px', color: '#fff', cursor: 'pointer', fontSize: '0.8rem' }}>Refresh</button>
+              </div>
+
+              {inquiries.length === 0 ? (
+                <div style={{ padding: '4rem', textAlign: 'center', opacity: 0.5 }}>
+                  <Mail size={48} style={{ margin: '0 auto 1.5rem', display: 'block' }} />
+                  <p>No messages received yet.</p>
+                </div>
+              ) : (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                  {inquiries.map((iq) => (
+                    <div key={iq.id} className="glass-card" style={{ padding: '2rem', borderRadius: '24px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.5rem' }}>
+                        <div>
+                          <div style={{ fontSize: '1.2rem', fontWeight: 800, marginBottom: '0.25rem' }}>{iq.name}</div>
+                          <div style={{ color: 'var(--primary)', fontWeight: 600, fontSize: '0.9rem' }}>{iq.email}</div>
+                        </div>
+                        <div style={{ textAlign: 'right' }}>
+                          <div style={{ fontSize: '0.8rem', opacity: 0.5 }}>{iq.timestamp?.toLocaleString()}</div>
+                          <div style={{ 
+                            fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase', 
+                            color: 'var(--text-muted)', background: 'rgba(255,255,255,0.05)', 
+                            padding: '0.2rem 0.6rem', borderRadius: '10px', marginTop: '0.5rem',
+                            display: 'inline-block'
+                          }}>Source: {iq.source}</div>
+                        </div>
+                      </div>
+                      
+                      {iq.budget && (
+                        <div style={{ marginBottom: '1.5rem', background: 'rgba(190, 242, 100, 0.05)', padding: '1rem', borderRadius: '12px', border: '1px solid rgba(190, 242, 100, 0.1)' }}>
+                          <span style={{ fontSize: '0.8rem', opacity: 0.6, fontWeight: 700, textTransform: 'uppercase', marginRight: '0.5rem' }}>Budget:</span>
+                          <span style={{ fontWeight: 600, color: 'var(--primary)' }}>{iq.budget}</span>
+                        </div>
+                      )}
+
+                      <div style={{ 
+                        background: 'rgba(0,0,0,0.2)', 
+                        padding: '1.5rem', 
+                        borderRadius: '16px', 
+                        fontSize: '1rem', 
+                        lineHeight: 1.6,
+                        whiteSpace: 'pre-wrap',
+                        marginBottom: '1.5rem'
+                      }}>
+                        {iq.message}
+                      </div>
+
+                      <div style={{ display: 'flex', gap: '1rem' }}>
+                        <a href={`mailto:${iq.email}`} className="btn-primary" style={{ padding: '0.6rem 1.2rem', fontSize: '0.85rem' }}>Reply via Email</a>
+                        <button onClick={async () => {
+                          if (!window.confirm('Delete this inquiry?')) return;
+                          setLoading(true);
+                          try {
+                            await deleteDoc(doc(db, 'inquiries', iq.id));
+                            fetchAllData();
+                            setSuccess('Inquiry deleted');
+                            setTimeout(() => setSuccess(''), 3000);
+                          } catch (e) { alert(iq.message); } finally { setLoading(false); }
+                        }} style={{ padding: '0.6rem 1.2rem', background: 'rgba(255, 51, 102, 0.1)', color: '#FF3366', border: 'none', borderRadius: '40px', fontSize: '0.85rem', cursor: 'pointer', fontWeight: 600 }}>Delete</button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+          {activeTab !== 'projects' && activeTab !== 'global' && activeTab !== 'media' && activeTab !== 'inquiries' && (
             <div className="glass-strong" style={{ padding: '3rem', borderRadius: '30px' }}>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
                 {Object.keys(pagesData[activeTab] || {}).map(key => (
