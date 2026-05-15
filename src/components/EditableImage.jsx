@@ -3,6 +3,7 @@ import { db, auth, storage } from '../firebase';
 import { doc, updateDoc, getDoc, setDoc } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { ImagePlus, Link2, Loader2, UploadCloud, Library } from 'lucide-react';
+import { cleanImageUrl } from '../utils/urlHelper';
 import MediaLibraryModal from './MediaLibraryModal';
 
 /**
@@ -37,7 +38,8 @@ const EditableImage = ({
     return () => unsub();
   }, []);
 
-  const saveToFirestore = async (newUrl) => {
+  const saveToFirestore = async (rawUrl) => {
+    const newUrl = cleanImageUrl(rawUrl);
     const docRef = doc(db, 'content', pageId);
     const snap = await getDoc(docRef);
     if (snap.exists()) {
@@ -156,7 +158,7 @@ const EditableImage = ({
         }}
       >
         <img 
-          src={url || 'https://via.placeholder.com/800x600?text=No+Image'} 
+          src={cleanImageUrl(url) || 'https://via.placeholder.com/800x600?text=No+Image'} 
           alt={fieldId}
           style={{
             ...style, width: '100%', height: '100%',
