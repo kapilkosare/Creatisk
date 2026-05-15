@@ -3,6 +3,7 @@ import { db } from '../firebase';
 import { collection, getDocs } from 'firebase/firestore';
 import { ArrowUpRight, Star, SlidersHorizontal } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { cleanImageUrl } from '../utils/urlHelper';
 import { PROJECT_DATA } from './ProjectDetailPage';
 import ThemeToggle from '../components/ThemeToggle';
 import PageLoader from '../components/PageLoader';
@@ -196,7 +197,7 @@ function ProjectCard({ project: p, featured }) {
           height: featured ? '400px' : '320px'
         }}>
           <img
-            src={p.imageUrl}
+            src={cleanImageUrl(p.imageUrl)}
             alt={p.title}
             style={{
               width: '100%',

@@ -6,6 +6,7 @@ import { db } from '../firebase';
 import { collection, getDocs } from 'firebase/firestore';
 import { ArrowRight, Star, MonitorSmartphone, PenTool, LayoutTemplate, Layers, Target, Rocket, Lightbulb, CheckCircle2, Mail, ChevronLeft, ChevronRight, Clapperboard, Globe, FileText, Cpu, Workflow, Smartphone, Sparkles } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { cleanImageUrl } from '../utils/urlHelper';
 import ThemeToggle from '../components/ThemeToggle';
 import PageLoader from '../components/PageLoader';
 
@@ -752,7 +753,7 @@ export default function LandingPage() {
             {projects.map((p, i) => (
               <div key={p.id} className="glass-card hover-scale" style={{ ...S.portfolioCard, gridColumn: i===0 ? 'span 2' : 'span 1' }}>
                 <div style={{ position:'relative', paddingTop: i===0 ? '40%' : '60%', overflow:'hidden', borderRadius:'16px 16px 0 0' }}>
-                  <img src={p.imageUrl} alt={p.title} style={{ position:'absolute', inset:0, width:'100%', height:'100%', objectFit:'cover', transition:'transform 0.5s ease' }} />
+                  <img src={cleanImageUrl(p.imageUrl)} alt={p.title} style={{ position:'absolute', inset:0, width:'100%', height:'100%', objectFit:'cover', transition:'transform 0.5s ease' }} />
                   <div style={{ position:'absolute', inset:0, background:'linear-gradient(to top, rgba(6,4,15,0.7) 0%, transparent 60%)' }} />
                 </div>
                 <div style={{ padding:'1.75rem', display:'flex', justifyContent:'space-between', alignItems:'center' }}>
