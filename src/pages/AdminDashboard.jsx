@@ -608,7 +608,7 @@ const AdminDashboard = () => {
                             fetchAllData();
                             setSuccess('Inquiry deleted');
                             setTimeout(() => setSuccess(''), 3000);
-                          } catch (e) { alert(iq.message); } finally { setLoading(false); }
+                          } catch (e) { alert(e.message); } finally { setLoading(false); }
                         }} style={{ padding: '0.6rem 1.2rem', background: 'rgba(255, 51, 102, 0.1)', color: '#FF3366', border: 'none', borderRadius: '40px', fontSize: '0.85rem', cursor: 'pointer', fontWeight: 600 }}>Delete</button>
                       </div>
                     </div>
