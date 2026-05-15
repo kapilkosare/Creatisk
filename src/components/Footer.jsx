@@ -11,7 +11,7 @@ const Footer = () => {
     ctaSub: "Leave your details and let's create something extraordinary together. We respond within 24 hours.",
     footerEmail: 'hello@creatisk.in',
     footerBy: 'by Kapil Kosare',
-    footerCopyright: 'Creatisk Agency. All rights reserved.'
+    footerCopyright: 'Creatisk. All rights reserved.'
   });
 
   const { settings } = useGlobalSettings();
