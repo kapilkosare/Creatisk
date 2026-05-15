@@ -83,28 +83,8 @@ const LoginPage = () => {
         zIndex: 1,
         border: '1px solid rgba(255,255,255,0.08)'
       }}>
-        {/* Connection Status Indicator */}
-        <div style={{ 
-          position: 'absolute', top: '1.5rem', right: '1.5rem', 
-          display: 'flex', alignItems: 'center', gap: '0.5rem',
-          fontSize: '0.75rem', fontWeight: 600,
-          color: connectionStatus === 'connected' ? '#BEF264' : '#FF3366',
-          background: 'rgba(0,0,0,0.2)', padding: '0.4rem 0.8rem', borderRadius: '20px'
-        }}>
-          <div style={{ 
-            width: 8, height: 8, borderRadius: '50%', 
-            background: connectionStatus === 'connected' ? '#BEF264' : '#FF3366',
-            boxShadow: `0 0 10px ${connectionStatus === 'connected' ? '#BEF264' : '#FF3366'}`
-          }} />
-          {connectionStatus === 'connected' ? 'Firebase Live' : 'Not Connected'}
-        </div>
-
         <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
           <img src="/logo-creatiks_black.png" alt="Creatisk" style={{ height: '63px', width: 'auto', marginBottom: '1.5rem' }} />
-          <h1 style={{ fontSize: '2rem', fontWeight: 800, letterSpacing: '-0.02em', marginBottom: '0.5rem', fontFamily: 'var(--font-hero)' }}>
-            Admin <span className="text-gradient">Portal</span>
-          </h1>
-          <p style={{ color: 'var(--text-muted)', fontSize: '1.1rem' }}>Enter your credentials to access the CMS</p>
         </div>
 
         {error && (

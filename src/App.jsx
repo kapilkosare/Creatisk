@@ -104,14 +104,11 @@ function App() {
       setLoading(false);
       return;
     }
-    /*
     const unsubscribe = onAuthStateChanged(auth, (u) => {
       setUser(u);
       setLoading(false);
     });
     return () => unsubscribe();
-    */
-    setLoading(false); // Force loading to end for test
   }, []);
 
   if (loading || themeLoading) {
