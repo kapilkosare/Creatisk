@@ -787,7 +787,6 @@ export default function LandingPage() {
             <EditableText pageId="home" fieldId="whySub" initialText={content.whySub} tagName="p" style={{ color:'var(--text-muted)', maxWidth:'620px', margin:'1rem auto 0', fontSize:'1.1rem' }} />
           </div>
           <div style={{ maxWidth:780, margin:'0 auto', position:'relative' }}>
-            <div style={{ position:'absolute', left:'27px', top:0, bottom:0, width:2, background:'linear-gradient(to bottom, #FF3366, #8A2BE2, #FF9933, #00E5FF)', opacity:0.3 }} />
             {PROCESS.map((step, i) => (
               <div key={i} className="glass-strong sticky-card" style={{ padding:'2.5rem 2.5rem 2.5rem 2rem', display:'flex', gap:'2rem', marginBottom:'1.5rem' }}>
                 <div style={{ width:56, height:56, borderRadius:'50%', background:`rgba(${hexToRgb(step.color)}, 0.12)`, border:`1px solid rgba(${hexToRgb(step.color)}, 0.25)`, display:'flex', alignItems:'center', justifyContent:'center', color:step.color, flexShrink:0 }}>
