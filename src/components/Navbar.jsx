@@ -5,15 +5,38 @@ import { auth } from '../firebase';
 import { Sparkles, Menu, X, Globe, MessageCircle, Share2, Send, ArrowUpRight } from 'lucide-react';
 import EditableText from './EditableText';
 import { usePageContent } from '../hooks/usePageContent';
+import { useGlobalSettings } from '../hooks/useGlobalSettings';
 
 const Navbar = ({ user }) => {
   const { content } = usePageContent('home', {
     navTalk: "Let's talk",
     navLogo: 'Creatisk.'
   });
+  const { settings } = useGlobalSettings();
   const navigate = useNavigate();
   const [scrolled, setScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [activeTheme, setActiveTheme] = useState('dark');
+
+  useEffect(() => {
+    const theme = document.documentElement.getAttribute('data-theme') || 'dark';
+    setActiveTheme(theme);
+    
+    const handleThemeChange = () => {
+      const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
+      setActiveTheme(currentTheme);
+    };
+    
+    window.addEventListener('creatisk-theme-changed', handleThemeChange);
+    
+    const observer = new MutationObserver(handleThemeChange);
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+    
+    return () => {
+      window.removeEventListener('creatisk-theme-changed', handleThemeChange);
+      observer.disconnect();
+    };
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
@@ -42,7 +65,11 @@ const Navbar = ({ user }) => {
           {/* Logo */}
           <div style={{ display: 'flex', alignItems: 'center', gap: scrolled ? '1rem' : '1.5rem' }}>
             <Link to="/" onClick={() => setIsMenuOpen(false)} style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
-              <img src="/logo-creatiks_black.png" alt="Creatisk" style={{ height: scrolled ? '40px' : '48px', width: 'auto', transition: 'all 0.4s ease' }} />
+              <img 
+                src={activeTheme === 'light' ? (settings.logoLight || '/logo-creatiks_black.png') : (settings.logoDark || '/logo-creatiks_black.png')} 
+                alt="Creatisk" 
+                style={{ height: scrolled ? '40px' : '48px', width: 'auto', transition: 'all 0.4s ease' }} 
+              />
             </Link>
 
             {user && (

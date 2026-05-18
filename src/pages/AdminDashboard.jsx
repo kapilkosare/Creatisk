@@ -53,7 +53,9 @@ const AdminDashboard = () => {
     notificationEmails: 'hello@creatisk.in, kapil.webfoxtech@gmail.com',
     heroBgMode: 'theme',
     heroBgColor: '#ffffff',
-    heroOpacity: 0.75
+    heroOpacity: 0.75,
+    logoLight: '',
+    logoDark: ''
   });
   const [projects, setProjects] = useState([]);
   const [inquiries, setInquiries] = useState([]);
@@ -314,7 +316,8 @@ const AdminDashboard = () => {
                         type="text" 
                         value={globalSettings.customColor1 || '#FF3366'} 
                         onChange={(e) => setGlobalSettings({...globalSettings, customColor1: e.target.value})}
-                        style={{ flexGrow: 1, padding: '0.75rem', borderRadius: '8px', background: 'var(--bg-main)', border: '1px solid var(--border-color)', color: '#fff' }}
+                        className="input-glass"
+                        style={{ flexGrow: 1, padding: '0.75rem 1.25rem' }}
                       />
                     </div>
                     <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.8rem', color: 'var(--text-muted)' }}>Opacity: {Math.round((globalSettings.customOpacity1 || 0.2) * 100)}%</label>
@@ -338,7 +341,8 @@ const AdminDashboard = () => {
                         type="text" 
                         value={globalSettings.customColor2 || '#8A2BE2'} 
                         onChange={(e) => setGlobalSettings({...globalSettings, customColor2: e.target.value})}
-                        style={{ flexGrow: 1, padding: '0.75rem', borderRadius: '8px', background: 'var(--bg-main)', border: '1px solid var(--border-color)', color: '#fff' }}
+                        className="input-glass"
+                        style={{ flexGrow: 1, padding: '0.75rem 1.25rem' }}
                       />
                     </div>
                     <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.8rem', color: 'var(--text-muted)' }}>Opacity: {Math.round((globalSettings.customOpacity2 || 0.15) * 100)}%</label>
@@ -407,6 +411,62 @@ const AdminDashboard = () => {
                 </div>
               </div>
 
+              <h3 style={{ marginBottom: '1.5rem', color: '#BEF264', fontSize: '1rem', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Logo Brand Studio</h3>
+              <div style={{ 
+                background: 'rgba(255,255,255,0.03)', 
+                padding: '2rem', 
+                borderRadius: '20px', 
+                border: '1px solid var(--border-color)',
+                marginBottom: '3rem'
+              }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem', marginBottom: '1.5rem' }}>
+                  <div>
+                    <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', fontWeight: 600 }}>Light Theme Logo URL</label>
+                    <input 
+                      type="text" 
+                      value={globalSettings.logoLight || ''} 
+                      onChange={(e) => setGlobalSettings({...globalSettings, logoLight: e.target.value})}
+                      placeholder="/logo-creatiks_black.png or https://example.com/logo-light.png"
+                      className="input-glass"
+                      style={{ padding: '0.75rem 1.25rem' }}
+                    />
+                  </div>
+                  <div>
+                    <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', fontWeight: 600 }}>Dark Theme Logo URL</label>
+                    <input 
+                      type="text" 
+                      value={globalSettings.logoDark || ''} 
+                      onChange={(e) => setGlobalSettings({...globalSettings, logoDark: e.target.value})}
+                      placeholder="/logo-creatiks_black.png or https://example.com/logo-dark.png"
+                      className="input-glass"
+                      style={{ padding: '0.75rem 1.25rem' }}
+                    />
+                  </div>
+                </div>
+                
+                {/* Brand Preview */}
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem', marginTop: '1.5rem' }}>
+                  <div style={{ background: '#ffffff', padding: '1.5rem', borderRadius: '12px', textAlign: 'center', border: '1px solid #ddd' }}>
+                    <div style={{ fontSize: '0.8rem', color: '#666', marginBottom: '0.5rem', fontWeight: 600 }}>Light Theme Preview</div>
+                    <img 
+                      src={globalSettings.logoLight || '/logo-creatiks_black.png'} 
+                      alt="Light Logo Preview" 
+                      style={{ maxHeight: '48px', maxWidth: '100%', objectFit: 'contain' }}
+                      onError={(e) => { e.target.src = '/logo-creatiks_black.png'; }}
+                    />
+                  </div>
+                  <div style={{ background: '#06040f', padding: '1.5rem', borderRadius: '12px', textAlign: 'center', border: '1px solid rgba(255,255,255,0.1)' }}>
+                    <div style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.5)', marginBottom: '0.5rem', fontWeight: 600 }}>Dark Theme Preview</div>
+                    <img 
+                      src={globalSettings.logoDark || '/logo-creatiks_black.png'} 
+                      alt="Dark Logo Preview" 
+                      style={{ maxHeight: '48px', maxWidth: '100%', objectFit: 'contain' }}
+                      onError={(e) => { e.target.src = '/logo-creatiks_black.png'; }}
+                    />
+                  </div>
+                </div>
+              </div>
+
               <h3 style={{ marginBottom: '1.5rem', color: '#FF9933', fontSize: '1rem', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Hero & Header Background Studio</h3>
               <div style={{ 
                 background: 'rgba(255,255,255,0.03)', 
@@ -421,10 +481,11 @@ const AdminDashboard = () => {
                     <select 
                       value={globalSettings.heroBgMode || 'theme'} 
                       onChange={(e) => setGlobalSettings({...globalSettings, heroBgMode: e.target.value})}
-                      style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', background: 'var(--bg-main)', border: '1px solid var(--border-color)', color: '#fff', outline: 'none' }}
+                      className="input-glass"
+                      style={{ padding: '0.75rem 1.25rem' }}
                     >
-                      <option value="theme">Adaptive Theme Background (White/Black)</option>
-                      <option value="custom">Custom Solid Background</option>
+                      <option value="theme" style={{ background: 'var(--bg-main)', color: 'var(--text-main)' }}>Adaptive Theme Background (White/Black)</option>
+                      <option value="custom" style={{ background: 'var(--bg-main)', color: 'var(--text-main)' }}>Custom Solid Background</option>
                     </select>
                   </div>
                   <div>
@@ -442,7 +503,8 @@ const AdminDashboard = () => {
                         value={globalSettings.heroBgColor || '#ffffff'} 
                         onChange={(e) => setGlobalSettings({...globalSettings, heroBgColor: e.target.value})}
                         disabled={globalSettings.heroBgMode === 'theme'}
-                        style={{ flexGrow: 1, padding: '0.75rem', borderRadius: '8px', background: 'var(--bg-main)', border: '1px solid var(--border-color)', color: '#fff', opacity: globalSettings.heroBgMode === 'theme' ? 0.4 : 1 }}
+                        className="input-glass"
+                        style={{ flexGrow: 1, padding: '0.75rem 1.25rem', opacity: globalSettings.heroBgMode === 'theme' ? 0.4 : 1 }}
                       />
                     </div>
                   </div>
@@ -476,7 +538,8 @@ const AdminDashboard = () => {
                   value={globalSettings.notificationEmails || ''} 
                   onChange={(e) => setGlobalSettings({...globalSettings, notificationEmails: e.target.value})}
                   placeholder="hello@creatisk.in, kapil.webfoxtech@gmail.com"
-                  style={{ width: '100%', padding: '1rem', borderRadius: '12px', background: 'var(--bg-main)', border: '1px solid var(--border-color)', color: '#fff' }}
+                  className="input-glass"
+                  style={{ padding: '0.75rem 1.25rem' }}
                 />
                 <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '0.5rem' }}>These emails will receive all form submissions from the website.</p>
               </div>
@@ -527,7 +590,7 @@ const AdminDashboard = () => {
                       setSuccess('Project saved!');
                     } catch (e) { alert(e.message); } finally { setLoading(false); }
                   }} className="btn-primary">{editingProject ? 'Update' : 'Add'} Project</button>
-                  {editingProject && <button onClick={() => { setEditingProject(null); setProjectForm({ title: '', category: '', imageUrl: '', link: '', description: '', client: '', year: '', tools: '', challenge: '', solution: '', result: '' }); }} style={{ padding: '1rem 2rem', background: 'rgba(255,255,255,0.05)', border: 'none', borderRadius: '40px', color: '#fff', cursor: 'pointer' }}>Cancel</button>}
+                  {editingProject && <button onClick={() => { setEditingProject(null); setProjectForm({ title: '', category: '', imageUrl: '', link: '', description: '', client: '', year: '', tools: '', challenge: '', solution: '', result: '' }); }} style={{ padding: '1rem 2rem', background: 'var(--pill-bg)', border: '1px solid var(--border-color)', borderRadius: '40px', color: 'var(--text-main)', cursor: 'pointer' }}>Cancel</button>}
                 </div>
               </div>
 
@@ -546,7 +609,7 @@ const AdminDashboard = () => {
                           challenge: '', solution: '', result: '',
                           ...p
                         }); 
-                      }} style={{ flex: 1, padding: '0.75rem', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', color: '#fff', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', transition: 'all 0.2s' }}><Edit2 size={16}/> Edit Project</button>
+                      }} style={{ flex: 1, padding: '0.75rem', background: 'var(--pill-bg)', border: '1px solid var(--border-color)', borderRadius: '12px', color: 'var(--text-main)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', transition: 'all 0.2s' }}><Edit2 size={16}/> Edit Project</button>
                       <button onClick={async () => {
                         if (!window.confirm('Are you sure you want to delete this project? This action cannot be undone.')) return;
                         setLoading(true);
@@ -566,7 +629,7 @@ const AdminDashboard = () => {
             <div className="glass-strong" style={{ padding: '3rem', borderRadius: '30px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
                 <h3 style={{ margin: 0 }}>Cloud Storage Library</h3>
-                <button onClick={fetchMedia} style={{ padding: '0.5rem 1rem', background: 'rgba(255,255,255,0.05)', border: 'none', borderRadius: '8px', color: '#fff', cursor: 'pointer', fontSize: '0.8rem' }}>Refresh</button>
+                <button onClick={fetchMedia} style={{ padding: '0.5rem 1rem', background: 'var(--pill-bg)', border: '1px solid var(--border-color)', borderRadius: '8px', color: 'var(--text-main)', cursor: 'pointer', fontSize: '0.8rem' }}>Refresh</button>
               </div>
 
               {mediaLoading ? (
@@ -609,7 +672,7 @@ const AdminDashboard = () => {
             <div className="glass-strong" style={{ padding: '3rem', borderRadius: '30px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3rem' }}>
                 <h3 style={{ margin: 0 }}>Form Inquiries ({inquiries.length})</h3>
-                <button onClick={fetchAllData} style={{ padding: '0.5rem 1rem', background: 'rgba(255,255,255,0.05)', border: 'none', borderRadius: '8px', color: '#fff', cursor: 'pointer', fontSize: '0.8rem' }}>Refresh</button>
+                <button onClick={fetchAllData} style={{ padding: '0.5rem 1rem', background: 'var(--pill-bg)', border: '1px solid var(--border-color)', borderRadius: '8px', color: 'var(--text-main)', cursor: 'pointer', fontSize: '0.8rem' }}>Refresh</button>
               </div>
 
               {inquiries.length === 0 ? (

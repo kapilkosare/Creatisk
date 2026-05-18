@@ -32,10 +32,12 @@ function App() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [themeLoading, setThemeLoading] = useState(true);
+  const [globalData, setGlobalData] = useState(null);
 
   // Apply cached theme immediately to prevent flashing
   useEffect(() => {
-    const cachedTheme = localStorage.getItem('creatisk-theme') || 'dark';
+    const userTheme = localStorage.getItem('creatisk-user-theme');
+    const cachedTheme = userTheme || localStorage.getItem('creatisk-theme') || 'dark';
     const cachedGrad = localStorage.getItem('creatisk-gradient');
     const cachedIsSolid = localStorage.getItem('creatisk-is-solid') === 'true';
     const cachedHeroOpacity = localStorage.getItem('creatisk-hero-opacity') || '0.75';
@@ -59,75 +61,96 @@ function App() {
     document.body.style.backgroundColor = cachedTheme === 'light' ? '#ffffff' : '#06040f';
   }, []);
 
+  // Fetch settings from Firestore
   useEffect(() => {
-    if (!db) return;
+    if (!db) {
+      setThemeLoading(false);
+      return;
+    }
     const unsub = onSnapshot(doc(db, 'content', 'global'), (snap) => {
       if (snap.exists()) {
-        const toHex = (o) => {
-          const h = Math.round(o * 255).toString(16);
-          return h.length === 1 ? '0' + h : h;
-        };
-        const { theme, gradientIndex } = snap.data();
-        const root = document.documentElement;
-        root.setAttribute('data-theme', theme);
-        let colors = '';
-        if (gradientIndex === -1) {
-          const data = snap.data();
-          const c1 = data.customColor1 || '#FF3366';
-          const c2 = data.customColor2 || '#8A2BE2';
-          const o1 = data.customOpacity1 ?? 0.2;
-          const o2 = data.customOpacity2 ?? 0.15;
-          
-
-          colors = theme === 'dark' 
-            ? `radial-gradient(circle at 20% 20%, ${c1}${toHex(o1)}, transparent 50%), radial-gradient(circle at 80% 80%, ${c2}${toHex(o2)}, transparent 50%), #06040f`
-            : `radial-gradient(circle at 20% 20%, ${c1}${toHex(o1 * 0.5)}, transparent 50%), #ffffff`;
-        } else {
-          const grad = GRADIENTS[gradientIndex] || GRADIENTS[0];
-          colors = theme === 'light' ? grad.light : grad.dark;
-        }
-
-        const data = snap.data();
-        const isSolid = !colors.includes('gradient');
-        
-        // Use user-defined orb colors if available, otherwise fallback to theme extraction
-
-        const orb1 = (data.orbColor1 || '#FF3366') + toHex(data.orbOpacity1 ?? 0.25);
-        const orb2 = (data.orbColor2 || '#8A2BE2') + toHex(data.orbOpacity2 ?? 0.25);
-        
-        root.style.setProperty('--bg-gradient', colors);
-        root.style.setProperty('--orb-visibility', isSolid ? 'hidden' : 'visible');
-        root.style.setProperty('--orb-color-1', orb1);
-        root.style.setProperty('--orb-color-2', orb2);
-        
-        // Extract & Pre-calculate Hero Background styles
-        const heroOpacity = data.heroOpacity ?? 0.75;
-        const heroBgMode = data.heroBgMode || 'theme';
-        const heroBgColor = data.heroBgColor || '#ffffff';
-        
-        let finalBg = '';
-        if (heroBgMode === 'custom' && heroBgColor) {
-          const r = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(heroBgColor);
-          finalBg = r ? `rgba(${parseInt(r[1],16)}, ${parseInt(r[2],16)}, ${parseInt(r[3],16)}, ${heroOpacity})` : `rgba(255, 255, 255, ${heroOpacity})`;
-        } else {
-          finalBg = theme === 'light' ? `rgba(255, 255, 255, ${heroOpacity})` : `rgba(6, 4, 15, ${heroOpacity})`;
-        }
-        root.style.setProperty('--hero-bg-color', finalBg);
-        
-        document.body.style.backgroundColor = theme === 'light' ? '#ffffff' : '#06040f';
-        
-        // Cache for next refresh
-        localStorage.setItem('creatisk-theme', theme);
-        localStorage.setItem('creatisk-gradient', colors);
-        localStorage.setItem('creatisk-is-solid', isSolid ? 'true' : 'false');
-        localStorage.setItem('creatisk-hero-opacity', heroOpacity);
-        localStorage.setItem('creatisk-hero-bg-mode', heroBgMode);
-        localStorage.setItem('creatisk-hero-bg-color', heroBgColor);
+        setGlobalData(snap.data());
       }
       setThemeLoading(false);
     });
     return () => unsub();
   }, []);
+
+  // Theme & Colors Rendering Engine (Runs on Firestore changes OR local toggle events)
+  useEffect(() => {
+    if (!globalData) return;
+
+    const applyThemeAndColors = () => {
+      const toHex = (o) => {
+        const h = Math.round(o * 255).toString(16);
+        return h.length === 1 ? '0' + h : h;
+      };
+      
+      const { theme, gradientIndex } = globalData;
+      const root = document.documentElement;
+      
+      // Prioritize user preference over the site owner's default theme choice
+      const userTheme = localStorage.getItem('creatisk-user-theme');
+      const activeTheme = userTheme || theme || 'dark';
+      
+      root.setAttribute('data-theme', activeTheme);
+      
+      let colors = '';
+      if (gradientIndex === -1) {
+        const c1 = globalData.customColor1 || '#FF3366';
+        const c2 = globalData.customColor2 || '#8A2BE2';
+        const o1 = globalData.customOpacity1 ?? 0.2;
+        const o2 = globalData.customOpacity2 ?? 0.15;
+        
+        colors = activeTheme === 'dark' 
+          ? `radial-gradient(circle at 20% 20%, ${c1}${toHex(o1)}, transparent 50%), radial-gradient(circle at 80% 80%, ${c2}${toHex(o2)}, transparent 50%), #06040f`
+          : `radial-gradient(circle at 20% 20%, ${c1}${toHex(o1 * 0.5)}, transparent 50%), #ffffff`;
+      } else {
+        const grad = GRADIENTS[gradientIndex] || GRADIENTS[0];
+        colors = activeTheme === 'light' ? grad.light : grad.dark;
+      }
+      
+      const isSolid = !colors.includes('gradient');
+      const orb1 = (globalData.orbColor1 || '#FF3366') + toHex(globalData.orbOpacity1 ?? 0.25);
+      const orb2 = (globalData.orbColor2 || '#8A2BE2') + toHex(globalData.orbOpacity2 ?? 0.25);
+      
+      root.style.setProperty('--bg-gradient', colors);
+      root.style.setProperty('--orb-visibility', isSolid ? 'hidden' : 'visible');
+      root.style.setProperty('--orb-color-1', orb1);
+      root.style.setProperty('--orb-color-2', orb2);
+      
+      // Extract & Pre-calculate Hero Background styles
+      const heroOpacity = globalData.heroOpacity ?? 0.75;
+      const heroBgMode = globalData.heroBgMode || 'theme';
+      const heroBgColor = globalData.heroBgColor || '#ffffff';
+      
+      let finalBg = '';
+      if (heroBgMode === 'custom' && heroBgColor) {
+        const r = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(heroBgColor);
+        finalBg = r ? `rgba(${parseInt(r[1],16)}, ${parseInt(r[2],16)}, ${parseInt(r[3],16)}, ${heroOpacity})` : `rgba(255, 255, 255, ${heroOpacity})`;
+      } else {
+        finalBg = activeTheme === 'light' ? `rgba(255, 255, 255, ${heroOpacity})` : `rgba(6, 4, 15, ${heroOpacity})`;
+      }
+      root.style.setProperty('--hero-bg-color', finalBg);
+      
+      document.body.style.backgroundColor = activeTheme === 'light' ? '#ffffff' : '#06040f';
+      
+      // Cache for next refresh
+      localStorage.setItem('creatisk-theme', activeTheme);
+      localStorage.setItem('creatisk-gradient', colors);
+      localStorage.setItem('creatisk-is-solid', isSolid ? 'true' : 'false');
+      localStorage.setItem('creatisk-hero-opacity', heroOpacity);
+      localStorage.setItem('creatisk-hero-bg-mode', heroBgMode);
+      localStorage.setItem('creatisk-hero-bg-color', heroBgColor);
+    };
+
+    applyThemeAndColors();
+
+    window.addEventListener('creatisk-theme-changed', applyThemeAndColors);
+    return () => {
+      window.removeEventListener('creatisk-theme-changed', applyThemeAndColors);
+    };
+  }, [globalData]);
 
   useEffect(() => {
     if (!auth) {

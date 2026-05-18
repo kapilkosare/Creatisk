@@ -30,19 +30,12 @@ function HeroCarousel({ content }) {
       style.id = id;
       style.textContent = `
         @keyframes skateAcross {
-          0% { left: -150px; opacity: 1; }
-          45% { left: 100%; opacity: 1; }
-          48% { left: 100%; opacity: 0; }
-          50% { left: 100%; opacity: 0; }
-          52% { left: 100%; opacity: 0; }
-          100% { left: 100%; opacity: 0; }
+          0% { left: -250px; }
+          100% { left: 100%; }
         }
         @keyframes skateBack {
-          0% { right: -150px; opacity: 0; }
-          50% { right: -150px; opacity: 0; }
-          52% { right: -150px; opacity: 1; }
-          95% { right: 100%; opacity: 1; }
-          100% { right: 100%; opacity: 0; }
+          0% { right: -250px; }
+          100% { right: 100%; }
         }
         @keyframes flyAcrossLeft {
           0% { left: 5%; top: 20%; transform: rotate(15deg); }
@@ -328,13 +321,8 @@ export default function LandingPage() {
         <div style={{ position: 'fixed', bottom: '0', left: 0, right: 0, height: '220px', zIndex: 10000, pointerEvents: 'none', overflow: 'hidden' }}>
           <img 
             src="/right-direction.png" 
-            alt="Skating Boy Right" 
-            style={{ position: 'absolute', bottom: '0', height: '200px', animation: 'skateAcross 60s linear infinite' }} 
-          />
-          <img 
-            src="/left-direction-direction.png" 
-            alt="Skating Boy Left" 
-            style={{ position: 'absolute', bottom: '0', height: '200px', animation: 'skateBack 60s linear infinite' }} 
+            alt="Skating Boy" 
+            style={{ position: 'absolute', bottom: '0', height: '200px', animation: 'skateAcross 6.0s cubic-bezier(0.22, 1, 0.36, 1) 0.8s 1 forwards' }} 
           />
         </div>
 

@@ -6,7 +6,9 @@ export const useGlobalSettings = () => {
   const [settings, setSettings] = useState({ 
     theme: 'dark', 
     gradientIndex: 0, 
-    notificationEmails: 'hello@creatisk.in, kapil.webfoxtech@gmail.com' 
+    notificationEmails: 'hello@creatisk.in, kapil.webfoxtech@gmail.com',
+    logoLight: '',
+    logoDark: ''
   });
   const [loading, setLoading] = useState(true);
 

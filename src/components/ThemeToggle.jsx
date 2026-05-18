@@ -6,27 +6,22 @@ const ThemeToggle = () => {
   const [isLight, setIsLight] = useState(false);
 
   useEffect(() => {
-    const theme = document.documentElement.getAttribute('data-theme') || 'dark';
+    const userTheme = localStorage.getItem('creatisk-user-theme');
+    const theme = userTheme || document.documentElement.getAttribute('data-theme') || 'dark';
     setIsLight(theme === 'light');
   }, []);
 
-  const handleToggle = async () => {
+  const handleToggle = () => {
     const newTheme = isLight ? 'dark' : 'light';
     
-    // Update Local UI immediately
+    // Update Local UI & preferences immediately
     document.documentElement.setAttribute('data-theme', newTheme);
-    localStorage.setItem('creatisk-theme', newTheme);
+    localStorage.setItem('creatisk-user-theme', newTheme);
     document.body.style.backgroundColor = newTheme === 'light' ? '#ffffff' : '#06040f';
     setIsLight(!isLight);
 
-    // Update Global Firebase (this triggers App.jsx listener)
-    try {
-      const globalRef = doc(db, 'content', 'global');
-      await updateDoc(globalRef, { theme: newTheme });
-    } catch (error) {
-      console.error("Global theme update failed:", error);
-      // Even if Firebase fails (e.g. no permissions), local state remains updated
-    }
+    // Notify App.jsx locally to refresh gradients & hero overlay colors without Firebase bloat
+    window.dispatchEvent(new Event('creatisk-theme-changed'));
   };
 
   return (
