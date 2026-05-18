@@ -780,6 +780,7 @@ export default function LandingPage() {
                     src={cleanImageUrl(p.imageUrl)} 
                     alt={p.title} 
                     className="portfolio-img"
+                    loading="lazy"
                     style={{ 
                       width: '100%', 
                       height: '100%', 
@@ -966,7 +967,7 @@ export default function LandingPage() {
                 </div>
                 <EditableText pageId="home" fieldId={`testimonialReview${i}`} initialText={content[`testimonialReview${i}`] || t.review} tagName="p" style={{ color:'var(--text-main)', opacity: 0.9, lineHeight:1.8, fontSize:'1rem', flexGrow:1 }} />
                 <div style={{ display:'flex', alignItems:'center', gap:'1rem', paddingTop:'1rem', borderTop:'1px solid rgba(255,255,255,0.06)' }}>
-                  <img src={t.avatar} alt={t.name} style={{ width:48, height:48, borderRadius:'50%', objectFit:'cover', border:'2px solid rgba(255,51,102,0.3)' }} />
+                  <img src={t.avatar} alt={t.name} loading="lazy" style={{ width:48, height:48, borderRadius:'50%', objectFit:'cover', border:'2px solid rgba(255,51,102,0.3)' }} />
                   <div>
                     <EditableText pageId="home" fieldId={`testimonialName${i}`} initialText={content[`testimonialName${i}`] || t.name} tagName="div" style={{ fontWeight:700, fontSize:'1rem', color: 'var(--text-main)' }} />
                     <EditableText pageId="home" fieldId={`testimonialRole${i}`} initialText={content[`testimonialRole${i}`] || t.role} tagName="div" style={{ color:'var(--text-muted)', fontSize:'0.85rem' }} />
