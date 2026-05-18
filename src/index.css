@@ -130,6 +130,7 @@ body::after {
 
 h1, h2, h3, h4, h5, h6 {
   line-height: 1.15;
+  font-family: var(--font-hero);
 }
 
 a {
@@ -298,6 +299,12 @@ button {
   content: '✦';
   font-size: 0.75rem;
   color: rgba(255,255,255,0.5);
+}
+
+.marquee-item-brand-star::after {
+  content: '★';
+  font-size: 1rem;
+  color: var(--primary);
 }
 
 @keyframes marquee {

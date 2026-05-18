@@ -4,7 +4,7 @@ import EditableImage from '../components/EditableImage';
 import { usePageContent } from '../hooks/usePageContent';
 import { db } from '../firebase';
 import { collection, getDocs } from 'firebase/firestore';
-import { ArrowRight, Star, MonitorSmartphone, PenTool, LayoutTemplate, Layers, Target, Rocket, Lightbulb, CheckCircle2, Mail, ChevronLeft, ChevronRight, Clapperboard, Globe, FileText, Cpu, Workflow, Smartphone, Sparkles } from 'lucide-react';
+import { ArrowRight, Star, MonitorSmartphone, PenTool, LayoutTemplate, Layers, Target, Rocket, Lightbulb, TrendingUp, Mail, ChevronLeft, ChevronRight, Clapperboard, Globe, FileText, Cpu, Workflow, Smartphone, Sparkles } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { cleanImageUrl } from '../utils/urlHelper';
 import ThemeToggle from '../components/ThemeToggle';
@@ -195,10 +195,10 @@ const SPECIALTIES = [
 ];
 
 const PROCESS = [
-  { icon: <Target size={28}/>, title:'Solid Strategy', desc:'We understand your objectives and audience to build a foolproof roadmap.', color:'var(--primary)' },
-  { icon: <Lightbulb size={28}/>, title:'Ideation & Design', desc:'Bold, innovative concepts aligned with your brand identity.', color:'var(--secondary)' },
-  { icon: <Rocket size={28}/>, title:'Build & Launch', desc:'Clean code, stunning design, and optimized performance.', color:'var(--accent)' },
-  { icon: <CheckCircle2 size={28}/>, title:'Evaluate & Grow', desc:'Rigorous testing and continuous iteration for lasting impact.', color:'var(--cyan)' },
+  { icon: <Target size={42} strokeWidth={1.5} />, title:'Solid Strategy', desc:'We understand your objectives and audience to build a foolproof roadmap.', color:'#FF3366' },
+  { icon: <Lightbulb size={42} strokeWidth={1.5} />, title:'Ideation & Design', desc:'Bold, innovative concepts aligned with your brand identity.', color:'#8A2BE2' },
+  { icon: <Rocket size={42} strokeWidth={1.5} />, title:'Build & Launch', desc:'Clean code, stunning design, and optimized performance.', color:'#FF9933' },
+  { icon: <TrendingUp size={42} strokeWidth={1.5} />, title:'Evaluate & Grow', desc:'Rigorous testing and continuous iteration for lasting impact.', color:'#00E5FF' },
 ];
 
 
@@ -689,14 +689,55 @@ export default function LandingPage() {
               style={{ color:'var(--text-muted)', maxWidth:'380px', fontSize:'1.05rem' }}
             />
           </div>
-          <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill, minmax(260px, 1fr))', gap:'1.5rem' }}>
+          <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill, minmax(280px, 1fr))', gap:'2rem' }}>
             {SERVICES.map((s,i)=>(
-              <div key={i} className="glass-card" style={{ padding:'2rem 1.75rem' }}>
-                <div style={{ width:52, height:52, borderRadius:14, display:'flex', alignItems:'center', justifyContent:'center', background:`rgba(${hexToRgb(s.color)}, 0.12)`, color:s.color, marginBottom:'1.25rem', border:`1px solid rgba(${hexToRgb(s.color)}, 0.2)` }}>
-                  {s.icon}
+              <div key={i} className="glass-card hover-scale" style={{ 
+                padding:'2.5rem', 
+                position: 'relative',
+                overflow: 'hidden',
+                display: 'flex',
+                flexDirection: 'column',
+                background: `linear-gradient(135deg, rgba(${hexToRgb(s.color)}, 0.03) 0%, var(--glass-bg) 100%)`,
+                border: '1px solid var(--border-color)',
+                borderRadius: '24px',
+                boxShadow: `0 8px 30px rgba(0,0,0,0.04), inset 0 1px 0 rgba(255,255,255,0.05)`
+              }}>
+                {/* Decorative background glow */}
+                <div style={{
+                  position: 'absolute',
+                  top: '-40px',
+                  right: '-40px',
+                  width: '140px',
+                  height: '140px',
+                  background: `radial-gradient(circle, rgba(${hexToRgb(s.color)}, 0.12) 0%, transparent 70%)`,
+                  borderRadius: '50%',
+                  zIndex: 0,
+                  pointerEvents: 'none',
+                }} />
+
+                <div style={{ 
+                  width: '64px', 
+                  height: '64px', 
+                  borderRadius: '18px', 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  justifyContent: 'center', 
+                  background: `linear-gradient(135deg, rgba(${hexToRgb(s.color)}, 0.15) 0%, rgba(${hexToRgb(s.color)}, 0.05) 100%)`, 
+                  color: s.color, 
+                  marginBottom: '1.75rem', 
+                  border: `1px solid rgba(${hexToRgb(s.color)}, 0.2)`,
+                  boxShadow: `inset 0 2px 10px rgba(${hexToRgb(s.color)}, 0.1), 0 8px 16px rgba(${hexToRgb(s.color)}, 0.05)`,
+                  position: 'relative',
+                  zIndex: 1
+                }}>
+                  <div style={{ filter: `drop-shadow(0 2px 4px rgba(${hexToRgb(s.color)}, 0.4))` }}>
+                    {React.cloneElement(s.icon, { size: 30, strokeWidth: 1.5 })}
+                  </div>
                 </div>
-                <EditableText pageId="home" fieldId={`${s.fieldId}Title`} initialText={content[`${s.fieldId}Title`]} tagName="h3" style={{ fontSize:'1.25rem', marginBottom:'0.6rem' }} />
-                <EditableText pageId="home" fieldId={`${s.fieldId}Desc`} initialText={content[`${s.fieldId}Desc`]} tagName="p" style={{ color:'var(--text-muted)', lineHeight:1.7, fontSize:'0.95rem' }} />
+                
+                <EditableText pageId="home" fieldId={`${s.fieldId}Title`} initialText={content[`${s.fieldId}Title`]} tagName="h3" style={{ fontSize:'1.35rem', fontWeight: 800, marginBottom:'0.75rem', color: 'var(--text-main)', position: 'relative', zIndex: 1 }} />
+                
+                <EditableText pageId="home" fieldId={`${s.fieldId}Desc`} initialText={content[`${s.fieldId}Desc`]} tagName="p" style={{ color:'var(--text-muted)', lineHeight:1.7, fontSize:'1rem', position: 'relative', zIndex: 1 }} />
               </div>
             ))}
           </div>
@@ -789,13 +830,50 @@ export default function LandingPage() {
           </div>
           <div style={{ maxWidth:780, margin:'0 auto', position:'relative' }}>
             {PROCESS.map((step, i) => (
-              <div key={i} className="glass-strong sticky-card" style={{ padding:'2.5rem 2.5rem 2.5rem 2rem', display:'flex', gap:'2rem', marginBottom:'1.5rem' }}>
-                <div style={{ width:56, height:56, borderRadius:'50%', background:`rgba(${hexToRgb(step.color)}, 0.12)`, border:`1px solid rgba(${hexToRgb(step.color)}, 0.25)`, display:'flex', alignItems:'center', justifyContent:'center', color:step.color, flexShrink:0 }}>
-                  {step.icon}
+              <div key={i} className="glass-strong sticky-card hover-scale" style={{ 
+                padding:'2.5rem', 
+                display:'flex', 
+                gap:'2rem', 
+                marginBottom:'1.5rem',
+                alignItems: 'center',
+                background: `linear-gradient(135deg, rgba(${hexToRgb(step.color)}, 0.05) 0%, var(--glass-bg-strong) 100%)`,
+                border: `1px solid rgba(${hexToRgb(step.color)}, 0.15)`,
+                borderRadius: '24px',
+                boxShadow: `0 10px 40px rgba(${hexToRgb(step.color)}, 0.08), inset 0 0 0 1px rgba(255,255,255,0.05)`
+              }}>
+                <div style={{ 
+                  width: '90px', 
+                  height: '90px', 
+                  borderRadius: '24px', 
+                  background: `linear-gradient(135deg, rgba(${hexToRgb(step.color)}, 0.15) 0%, rgba(${hexToRgb(step.color)}, 0.05) 100%)`, 
+                  boxShadow: `inset 0 0 20px rgba(${hexToRgb(step.color)}, 0.2), 0 10px 20px rgba(${hexToRgb(step.color)}, 0.1)`,
+                  display:'flex', 
+                  alignItems:'center', 
+                  justifyContent:'center', 
+                  color:step.color, 
+                  flexShrink:0 
+                }}>
+                  <div style={{ filter: `drop-shadow(0 4px 8px rgba(${hexToRgb(step.color)}, 0.4))` }}>
+                    {step.icon}
+                  </div>
                 </div>
-                <div>
-                  <EditableText pageId="home" fieldId={`processTitle${i+1}`} initialText={content[`processTitle${i+1}`]} tagName="h3" style={{ fontSize:'1.7rem', fontFamily:'var(--font-hero)', marginBottom:'0.75rem' }} />
-                  <EditableText pageId="home" fieldId={`processDesc${i+1}`} initialText={content[`processDesc${i+1}`]} tagName="p" style={{ color:'var(--text-muted)', fontSize:'1.05rem', lineHeight:1.7 }} />
+                <div style={{ flex: 1 }}>
+                  <EditableText pageId="home" fieldId={`processTitle${i+1}`} initialText={content[`processTitle${i+1}`]} tagName="h3" style={{ fontSize:'1.8rem', fontWeight: 800, fontFamily: 'var(--font-hero)', marginBottom:'0.5rem', color: 'var(--text-main)' }} />
+                  <EditableText pageId="home" fieldId={`processDesc${i+1}`} initialText={content[`processDesc${i+1}`]} tagName="p" style={{ color:'var(--text-muted)', fontSize:'1.1rem', lineHeight:1.6 }} />
+                </div>
+                <div style={{
+                  width: '48px',
+                  height: '48px',
+                  borderRadius: '50%',
+                  background: 'var(--bg-main)',
+                  boxShadow: `0 4px 15px rgba(0,0,0,0.05), inset 0 0 0 1px rgba(${hexToRgb(step.color)}, 0.2)`,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: step.color,
+                  flexShrink: 0
+                }}>
+                  <ArrowRight size={24} />
                 </div>
               </div>
             ))}
@@ -807,7 +885,7 @@ export default function LandingPage() {
       <div className="marquee-container marquee-muted">
         <div className="marquee-content">
           {['5-Star Reviews','Trusted Worldwide','Award Winning','Client First','5-Star Reviews','Trusted Worldwide','Award Winning','Client First'].map((t,i)=>(
-            <span key={i} className="marquee-item" style={{ color:'var(--text-muted)' }}>{t}</span>
+            <span key={i} className="marquee-item marquee-item-brand-star" style={{ color:'var(--text-muted)' }}>{t}</span>
           ))}
         </div>
       </div>
@@ -841,12 +919,12 @@ export default function LandingPage() {
                   ))}
                   <span style={{ marginLeft:'0.5rem', color:'var(--text-muted)', fontSize:'0.85rem', fontWeight:600 }}>{t.rating}.0 / 5</span>
                 </div>
-                <EditableText pageId="home" fieldId={`testimonialReview${i}`} initialText={t.review} tagName="p" style={{ color:'var(--text-main)', opacity: 0.9, lineHeight:1.8, fontSize:'1rem', flexGrow:1 }} />
+                <EditableText pageId="home" fieldId={`testimonialReview${i}`} initialText={content[`testimonialReview${i}`] || t.review} tagName="p" style={{ color:'var(--text-main)', opacity: 0.9, lineHeight:1.8, fontSize:'1rem', flexGrow:1 }} />
                 <div style={{ display:'flex', alignItems:'center', gap:'1rem', paddingTop:'1rem', borderTop:'1px solid rgba(255,255,255,0.06)' }}>
                   <img src={t.avatar} alt={t.name} style={{ width:48, height:48, borderRadius:'50%', objectFit:'cover', border:'2px solid rgba(255,51,102,0.3)' }} />
                   <div>
-                    <EditableText pageId="home" fieldId={`testimonialName${i}`} initialText={t.name} tagName="div" style={{ fontWeight:700, fontSize:'1rem', color: 'var(--text-main)' }} />
-                    <EditableText pageId="home" fieldId={`testimonialRole${i}`} initialText={t.role} tagName="div" style={{ color:'var(--text-muted)', fontSize:'0.85rem' }} />
+                    <EditableText pageId="home" fieldId={`testimonialName${i}`} initialText={content[`testimonialName${i}`] || t.name} tagName="div" style={{ fontWeight:700, fontSize:'1rem', color: 'var(--text-main)' }} />
+                    <EditableText pageId="home" fieldId={`testimonialRole${i}`} initialText={content[`testimonialRole${i}`] || t.role} tagName="div" style={{ color:'var(--text-muted)', fontSize:'0.85rem' }} />
                   </div>
                   <div style={{ marginLeft:'auto', background:'var(--primary-gradient)', borderRadius:8, padding:'0.3rem 0.75rem', fontSize:'0.75rem', fontWeight:700 }}>Verified</div>
                 </div>
