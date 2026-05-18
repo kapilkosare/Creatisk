@@ -50,7 +50,10 @@ const AdminDashboard = () => {
   const [globalSettings, setGlobalSettings] = useState({ 
     theme: 'dark', 
     gradientIndex: 0,
-    notificationEmails: 'hello@creatisk.in, kapil.webfoxtech@gmail.com'
+    notificationEmails: 'hello@creatisk.in, kapil.webfoxtech@gmail.com',
+    heroBgMode: 'theme',
+    heroBgColor: '#ffffff',
+    heroOpacity: 0.75
   });
   const [projects, setProjects] = useState([]);
   const [inquiries, setInquiries] = useState([]);
@@ -76,7 +79,7 @@ const AdminDashboard = () => {
       }
       setPagesData(fetchedPages);
       const settingsSnap = await getDoc(doc(db, 'content', 'global'));
-      if (settingsSnap.exists()) setGlobalSettings(settingsSnap.data());
+      if (settingsSnap.exists()) setGlobalSettings(prev => ({ ...prev, ...settingsSnap.data() }));
       const querySnapshot = await getDocs(collection(db, 'projects'));
       setProjects(querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
       
@@ -401,6 +404,61 @@ const AdminDashboard = () => {
                       style={{ width: '100%' }}
                     />
                   </div>
+                </div>
+              </div>
+
+              <h3 style={{ marginBottom: '1.5rem', color: '#FF9933', fontSize: '1rem', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Hero & Header Background Studio</h3>
+              <div style={{ 
+                background: 'rgba(255,255,255,0.03)', 
+                padding: '2rem', 
+                borderRadius: '20px', 
+                border: '1px solid var(--border-color)',
+                marginBottom: '3rem'
+              }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem', marginBottom: '2rem' }}>
+                  <div>
+                    <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', fontWeight: 600 }}>Background Mode</label>
+                    <select 
+                      value={globalSettings.heroBgMode || 'theme'} 
+                      onChange={(e) => setGlobalSettings({...globalSettings, heroBgMode: e.target.value})}
+                      style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', background: 'var(--bg-main)', border: '1px solid var(--border-color)', color: '#fff', outline: 'none' }}
+                    >
+                      <option value="theme">Adaptive Theme Background (White/Black)</option>
+                      <option value="custom">Custom Solid Background</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', fontWeight: 600 }}>Custom Background Color</label>
+                    <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                      <input 
+                        type="color" 
+                        value={globalSettings.heroBgColor || '#ffffff'} 
+                        onChange={(e) => setGlobalSettings({...globalSettings, heroBgColor: e.target.value})}
+                        disabled={globalSettings.heroBgMode === 'theme'}
+                        style={{ width: '50px', height: '44px', border: 'none', borderRadius: '8px', cursor: 'pointer', opacity: globalSettings.heroBgMode === 'theme' ? 0.4 : 1 }}
+                      />
+                      <input 
+                        type="text" 
+                        value={globalSettings.heroBgColor || '#ffffff'} 
+                        onChange={(e) => setGlobalSettings({...globalSettings, heroBgColor: e.target.value})}
+                        disabled={globalSettings.heroBgMode === 'theme'}
+                        style={{ flexGrow: 1, padding: '0.75rem', borderRadius: '8px', background: 'var(--bg-main)', border: '1px solid var(--border-color)', color: '#fff', opacity: globalSettings.heroBgMode === 'theme' ? 0.4 : 1 }}
+                      />
+                    </div>
+                  </div>
+                </div>
+                
+                <div>
+                  <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', fontWeight: 600 }}>Hero Background Opacity: {Math.round((globalSettings.heroOpacity ?? 0.75) * 100)}%</label>
+                  <input 
+                    type="range" min="0" max="1" step="0.01"
+                    value={globalSettings.heroOpacity ?? 0.75}
+                    onChange={(e) => setGlobalSettings({...globalSettings, heroOpacity: parseFloat(e.target.value)})}
+                    style={{ width: '100%', accentColor: 'var(--primary)' }}
+                  />
+                  <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '0.5rem' }}>
+                    0% makes the Hero completely transparent (full background gradient). 100% makes it fully solid (hides background gradient completely).
+                  </p>
                 </div>
               </div>
 

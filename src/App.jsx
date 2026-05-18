@@ -38,11 +38,24 @@ function App() {
     const cachedTheme = localStorage.getItem('creatisk-theme') || 'dark';
     const cachedGrad = localStorage.getItem('creatisk-gradient');
     const cachedIsSolid = localStorage.getItem('creatisk-is-solid') === 'true';
+    const cachedHeroOpacity = localStorage.getItem('creatisk-hero-opacity') || '0.75';
+    const cachedHeroBgMode = localStorage.getItem('creatisk-hero-bg-mode') || 'theme';
+    const cachedHeroBgColor = localStorage.getItem('creatisk-hero-bg-color') || '#ffffff';
     const root = document.documentElement;
     
     root.setAttribute('data-theme', cachedTheme);
     if (cachedGrad) root.style.setProperty('--bg-gradient', cachedGrad);
     root.style.setProperty('--orb-visibility', cachedIsSolid ? 'hidden' : 'visible');
+    
+    let cachedBg = '';
+    if (cachedHeroBgMode === 'custom' && cachedHeroBgColor) {
+      const r = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(cachedHeroBgColor);
+      cachedBg = r ? `rgba(${parseInt(r[1],16)}, ${parseInt(r[2],16)}, ${parseInt(r[3],16)}, ${cachedHeroOpacity})` : `rgba(255, 255, 255, ${cachedHeroOpacity})`;
+    } else {
+      cachedBg = cachedTheme === 'light' ? `rgba(255, 255, 255, ${cachedHeroOpacity})` : `rgba(6, 4, 15, ${cachedHeroOpacity})`;
+    }
+    root.style.setProperty('--hero-bg-color', cachedBg);
+    
     document.body.style.backgroundColor = cachedTheme === 'light' ? '#ffffff' : '#06040f';
   }, []);
 
@@ -87,12 +100,29 @@ function App() {
         root.style.setProperty('--orb-color-1', orb1);
         root.style.setProperty('--orb-color-2', orb2);
         
+        // Extract & Pre-calculate Hero Background styles
+        const heroOpacity = data.heroOpacity ?? 0.75;
+        const heroBgMode = data.heroBgMode || 'theme';
+        const heroBgColor = data.heroBgColor || '#ffffff';
+        
+        let finalBg = '';
+        if (heroBgMode === 'custom' && heroBgColor) {
+          const r = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(heroBgColor);
+          finalBg = r ? `rgba(${parseInt(r[1],16)}, ${parseInt(r[2],16)}, ${parseInt(r[3],16)}, ${heroOpacity})` : `rgba(255, 255, 255, ${heroOpacity})`;
+        } else {
+          finalBg = theme === 'light' ? `rgba(255, 255, 255, ${heroOpacity})` : `rgba(6, 4, 15, ${heroOpacity})`;
+        }
+        root.style.setProperty('--hero-bg-color', finalBg);
+        
         document.body.style.backgroundColor = theme === 'light' ? '#ffffff' : '#06040f';
         
         // Cache for next refresh
         localStorage.setItem('creatisk-theme', theme);
         localStorage.setItem('creatisk-gradient', colors);
         localStorage.setItem('creatisk-is-solid', isSolid ? 'true' : 'false');
+        localStorage.setItem('creatisk-hero-opacity', heroOpacity);
+        localStorage.setItem('creatisk-hero-bg-mode', heroBgMode);
+        localStorage.setItem('creatisk-hero-bg-color', heroBgColor);
       }
       setThemeLoading(false);
     });

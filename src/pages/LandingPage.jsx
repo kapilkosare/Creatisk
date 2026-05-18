@@ -302,12 +302,11 @@ export default function LandingPage() {
     <div style={{ width: '100%', overflowX: 'hidden', position: 'relative' }}>
       
       {/* ── 1. HERO ─────────────────────────────────────── */}
-      <section style={{ ...S.hero, backgroundColor: 'transparent', backgroundAttachment: 'fixed' }}>
+      <section style={{ ...S.hero, backgroundColor: 'var(--hero-bg-color, rgba(var(--bg-main-rgb), 0.75))', backgroundAttachment: 'fixed' }}>
         <ThemeToggle />
-        {/* Orbs */}
-        <div className="orb orb-pink"  style={{ top: '10%',  left: '-5%', filter: 'blur(120px)', opacity: 0.4 }} />
-        <div className="orb orb-purple" style={{ top: '20%', right: '-10%', filter: 'blur(120px)', opacity: 0.3 }} />
-        <div className="orb orb-orange" style={{ bottom: '15%', left: '40%', filter: 'blur(100px)', opacity: 0.2 }} />
+        {/* Orbs - Tuned for ultra-clean header and white space matching earlier screenshots */}
+        <div className="orb orb-purple" style={{ top: '20%', right: '-10%', filter: 'blur(120px)', opacity: 0.15 }} />
+        <div className="orb orb-orange" style={{ bottom: '15%', left: '45%', filter: 'blur(100px)', opacity: 0.1 }} />
 
         {/* Large Birds Flying Across the Hero */}
         <div style={{ position: 'absolute', width: '70px', height: '70px', animation: 'flyAcrossLeft 90s linear infinite', zIndex: 1, pointerEvents: 'none' }}>

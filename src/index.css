@@ -3,6 +3,7 @@
 :root {
   /* Default Theme (Dark) */
   --bg-main: #06040f;
+  --bg-main-rgb: 6, 4, 15;
   --bg-gradient: radial-gradient(ellipse 80% 60% at 20% 10%, rgba(138, 43, 226, 0.25) 0%, transparent 60%),
                  radial-gradient(ellipse 60% 50% at 80% 5%, rgba(255, 51, 102, 0.2) 0%, transparent 55%),
                  radial-gradient(ellipse 70% 70% at 50% 90%, rgba(74, 0, 224, 0.2) 0%, transparent 60%),
@@ -39,6 +40,7 @@
 
 [data-theme='light'] {
   --bg-main: #ffffff;
+  --bg-main-rgb: 255, 255, 255;
   --accent-gradient: linear-gradient(135deg, #84cc16 0%, #4d7c0f 100%);
   --text-main: #000000;
   --text-muted: #444444;
