@@ -302,7 +302,7 @@ export default function LandingPage() {
     <div style={{ width: '100%', overflowX: 'hidden', position: 'relative' }}>
       
       {/* ── 1. HERO ─────────────────────────────────────── */}
-      <section style={{ ...S.hero, backgroundColor: 'var(--bg-main)', backgroundAttachment: 'fixed' }}>
+      <section style={{ ...S.hero, backgroundColor: 'transparent', backgroundAttachment: 'fixed' }}>
         <ThemeToggle />
         {/* Orbs */}
         <div className="orb orb-pink"  style={{ top: '10%',  left: '-5%', filter: 'blur(120px)', opacity: 0.4 }} />
@@ -689,55 +689,31 @@ export default function LandingPage() {
               style={{ color:'var(--text-muted)', maxWidth:'380px', fontSize:'1.05rem' }}
             />
           </div>
-          <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill, minmax(280px, 1fr))', gap:'2rem' }}>
+          <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill, minmax(260px, 1fr))', gap:'1.5rem' }}>
             {SERVICES.map((s,i)=>(
               <div key={i} className="glass-card hover-scale" style={{ 
-                padding:'2.5rem', 
-                position: 'relative',
-                overflow: 'hidden',
+                padding:'2rem 1.75rem', 
                 display: 'flex',
                 flexDirection: 'column',
-                background: `linear-gradient(135deg, rgba(${hexToRgb(s.color)}, 0.03) 0%, var(--glass-bg) 100%)`,
-                border: '1px solid var(--border-color)',
-                borderRadius: '24px',
-                boxShadow: `0 8px 30px rgba(0,0,0,0.04), inset 0 1px 0 rgba(255,255,255,0.05)`
               }}>
-                {/* Decorative background glow */}
-                <div style={{
-                  position: 'absolute',
-                  top: '-40px',
-                  right: '-40px',
-                  width: '140px',
-                  height: '140px',
-                  background: `radial-gradient(circle, rgba(${hexToRgb(s.color)}, 0.12) 0%, transparent 70%)`,
-                  borderRadius: '50%',
-                  zIndex: 0,
-                  pointerEvents: 'none',
-                }} />
-
                 <div style={{ 
-                  width: '64px', 
-                  height: '64px', 
-                  borderRadius: '18px', 
+                  width: '48px', 
+                  height: '48px', 
+                  borderRadius: '12px', 
                   display: 'flex', 
                   alignItems: 'center', 
                   justifyContent: 'center', 
-                  background: `linear-gradient(135deg, rgba(${hexToRgb(s.color)}, 0.15) 0%, rgba(${hexToRgb(s.color)}, 0.05) 100%)`, 
+                  background: `rgba(${hexToRgb(s.color)}, 0.1)`, 
                   color: s.color, 
-                  marginBottom: '1.75rem', 
-                  border: `1px solid rgba(${hexToRgb(s.color)}, 0.2)`,
-                  boxShadow: `inset 0 2px 10px rgba(${hexToRgb(s.color)}, 0.1), 0 8px 16px rgba(${hexToRgb(s.color)}, 0.05)`,
-                  position: 'relative',
-                  zIndex: 1
+                  marginBottom: '1.25rem', 
+                  border: `1px solid rgba(${hexToRgb(s.color)}, 0.15)`,
                 }}>
-                  <div style={{ filter: `drop-shadow(0 2px 4px rgba(${hexToRgb(s.color)}, 0.4))` }}>
-                    {React.cloneElement(s.icon, { size: 30, strokeWidth: 1.5 })}
-                  </div>
+                  {React.cloneElement(s.icon, { size: 24 })}
                 </div>
                 
-                <EditableText pageId="home" fieldId={`${s.fieldId}Title`} initialText={content[`${s.fieldId}Title`]} tagName="h3" style={{ fontSize:'1.35rem', fontWeight: 800, marginBottom:'0.75rem', color: 'var(--text-main)', position: 'relative', zIndex: 1 }} />
+                <EditableText pageId="home" fieldId={`${s.fieldId}Title`} initialText={content[`${s.fieldId}Title`]} tagName="h3" style={{ fontSize:'1.25rem', fontWeight: 700, marginBottom:'0.6rem', color: 'var(--text-main)' }} />
                 
-                <EditableText pageId="home" fieldId={`${s.fieldId}Desc`} initialText={content[`${s.fieldId}Desc`]} tagName="p" style={{ color:'var(--text-muted)', lineHeight:1.7, fontSize:'1rem', position: 'relative', zIndex: 1 }} />
+                <EditableText pageId="home" fieldId={`${s.fieldId}Desc`} initialText={content[`${s.fieldId}Desc`]} tagName="p" style={{ color:'var(--text-muted)', lineHeight:1.7, fontSize:'0.95rem' }} />
               </div>
             ))}
           </div>
@@ -778,7 +754,7 @@ export default function LandingPage() {
       <section id="portfolio" style={{ padding:'8rem 0', position:'relative' }}>
         <div className="orb orb-pink" style={{ top:'20%', left:'-5%', opacity:0.4 }} />
         <div className="container" style={{ position:'relative', zIndex:1 }}>
-          <div style={{ textAlign: 'center', marginBottom: '8rem' }}>
+          <div style={{ textAlign: 'center', marginBottom: '3.5rem' }}>
             <div className="section-tag" style={{ margin: '0 auto 2rem' }}>
               <Sparkles size={14}/> <EditableText pageId="home" fieldId="portfolioTag" initialText={content.portfolioTag} tagName="span" />
             </div>
@@ -792,21 +768,103 @@ export default function LandingPage() {
           </div>
           <div style={S.portfolioGrid}>
             {projects.map((p, i) => (
-              <div key={p.id} className="glass-card hover-scale" style={{ ...S.portfolioCard, gridColumn: i===0 ? 'span 2' : 'span 1' }}>
-                <div style={{ position:'relative', paddingTop: i===0 ? '40%' : '60%', overflow:'hidden', borderRadius:'16px 16px 0 0' }}>
-                  <img src={cleanImageUrl(p.imageUrl)} alt={p.title} style={{ position:'absolute', inset:0, width:'100%', height:'100%', objectFit:'cover', transition:'transform 0.5s ease' }} />
-                  <div style={{ position:'absolute', inset:0, background:'linear-gradient(to top, rgba(6,4,15,0.7) 0%, transparent 60%)' }} />
+              <Link 
+                key={p.id} 
+                to={`/portfolio/${p.id}`}
+                className="hover-scale" 
+                style={{ 
+                  position: 'relative',
+                  gridColumn: i===0 ? 'span 2' : 'span 1',
+                  borderRadius: '28px',
+                  overflow: 'hidden',
+                  cursor: 'pointer',
+                  aspectRatio: i===0 ? '2.1 / 1' : '1.35 / 1',
+                  boxShadow: '0 20px 40px rgba(0, 0, 0, 0.08)',
+                  border: '1px solid var(--border-color)',
+                  transition: 'all 0.5s cubic-bezier(0.16, 1, 0.3, 1)',
+                  display: 'block',
+                  textDecoration: 'none',
+                  color: 'inherit'
+                }}
+              >
+                {/* Image Container */}
+                <div style={{ width: '100%', height: '100%', overflow: 'hidden', position: 'relative' }}>
+                  <img 
+                    src={cleanImageUrl(p.imageUrl)} 
+                    alt={p.title} 
+                    className="portfolio-img"
+                    style={{ 
+                      width: '100%', 
+                      height: '100%', 
+                      objectFit: 'cover', 
+                      transition: 'transform 0.8s cubic-bezier(0.16, 1, 0.3, 1)',
+                    }} 
+                  />
+                  
+                  {/* Premium Dark Gradient Overlay */}
+                  <div style={{ 
+                    position: 'absolute', 
+                    inset: 0, 
+                    background: 'linear-gradient(to top, rgba(6, 4, 15, 0.95) 0%, rgba(6, 4, 15, 0.5) 45%, rgba(6, 4, 15, 0.1) 80%, transparent 100%)',
+                    transition: 'opacity 0.5s ease',
+                  }} />
                 </div>
-                <div style={{ padding:'1.75rem', display:'flex', justifyContent:'space-between', alignItems:'center' }}>
-                  <div>
-                    <span style={{ color:'var(--primary)', fontSize:'0.8rem', fontWeight:700, letterSpacing:'0.1em', textTransform:'uppercase' }}>{p.category}</span>
-                    <h3 style={{ fontSize:'1.6rem', marginTop:'0.3rem' }}>{p.title}</h3>
+
+                {/* Content Overlay */}
+                <div style={{ 
+                  position: 'absolute', 
+                  bottom: 0, 
+                  left: 0, 
+                  right: 0, 
+                  padding: '2.5rem', 
+                  display: 'flex', 
+                  justifyContent: 'space-between', 
+                  alignItems: 'flex-end',
+                  zIndex: 2
+                }}>
+                  <div style={{ maxWidth: '80%' }}>
+                    <span style={{ 
+                      color: 'var(--primary)', 
+                      fontSize: '0.85rem', 
+                      fontWeight: 800, 
+                      letterSpacing: '0.15em', 
+                      textTransform: 'uppercase',
+                      display: 'inline-block',
+                      marginBottom: '0.6rem'
+                    }}>
+                      {p.category}
+                    </span>
+                    <h3 style={{ 
+                      fontSize: i===0 ? '2rem' : '1.5rem', 
+                      fontWeight: 800,
+                      fontFamily: 'var(--font-hero)',
+                      color: '#ffffff',
+                      letterSpacing: '-0.02em',
+                      lineHeight: 1.2
+                    }}>
+                      {p.title}
+                    </h3>
                   </div>
-                  <button className="btn-outline" style={{ padding:'0.75rem', borderRadius:'50%', flexShrink:0 }}>
-                    <ArrowRight size={18}/>
-                  </button>
+
+                  {/* Sleek Floating Glass Action Button */}
+                  <div className="portfolio-btn" style={{ 
+                    width: '56px', 
+                    height: '56px', 
+                    borderRadius: '50%', 
+                    background: 'rgba(255, 255, 255, 0.1)', 
+                    backdropFilter: 'blur(12px)',
+                    border: '1px solid rgba(255, 255, 255, 0.2)',
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    justifyContent: 'center',
+                    color: '#ffffff',
+                    transition: 'all 0.4s ease',
+                    boxShadow: '0 10px 25px rgba(0,0,0,0.1)'
+                  }}>
+                    <ArrowRight size={22} className="portfolio-arrow" style={{ transition: 'transform 0.3s ease' }} />
+                  </div>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
 

@@ -527,3 +527,21 @@ button {
     padding: 0 1rem;
   }
 }
+
+/* ======================================================== */
+/* Premium Portfolio Card Custom Hover Animations            */
+/* ======================================================== */
+.hover-scale:hover .portfolio-img {
+  transform: scale(1.05);
+}
+
+.hover-scale:hover .portfolio-btn {
+  background: var(--primary-gradient) !important;
+  border-color: transparent !important;
+  box-shadow: 0 10px 25px rgba(255, 51, 102, 0.4) !important;
+  transform: scale(1.05);
+}
+
+.hover-scale:hover .portfolio-btn svg {
+  transform: translateX(3px);
+}
