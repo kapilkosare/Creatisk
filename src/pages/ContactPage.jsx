@@ -238,7 +238,7 @@ const ContactPage = () => {
           borderRadius: 48, 
           background: 'var(--pill-bg)', 
           textAlign: 'center',
-          marginBottom: '10rem',
+          marginBottom: '4rem',
           border: 'var(--pill-border)'
         }}>
            <div style={{ color: 'var(--primary)', marginBottom: '1.5rem' }}><Globe size={48} /></div>
@@ -252,9 +252,6 @@ const ContactPage = () => {
            />
         </div>
       </div>
-
-      {/* FOOTER PADDING */}
-      <div style={{ padding: '4rem 0' }}></div>
     </div>
   );
 };

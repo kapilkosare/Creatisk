@@ -90,7 +90,7 @@ const ServicesPage = () => {
           display: 'grid', 
           gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 400px), 1fr))', 
           gap: '3rem',
-          marginBottom: '15rem'
+          marginBottom: '4rem'
         }}>
           {SERVICES_DATA.map((service, i) => (
             <div key={i} className="glass-card" style={{ 
@@ -136,36 +136,6 @@ const ServicesPage = () => {
               </button>
             </div>
           ))}
-        </div>
-
-        {/* ── SECTION 4: PACKAGES (Pricing Table) ── */}
-        <div style={{ marginBottom: '15rem' }}>
-          <div style={{ textAlign: 'center', marginBottom: '8rem' }}>
-            <h2 style={{ fontSize: '3.5rem', fontWeight: 900 }}>Transparent <span className="text-gradient">Engagement</span></h2>
-            <p style={{ color: 'var(--text-muted)', marginTop: '1rem' }}>Flexible models tailored to your business needs.</p>
-          </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 320px), 1fr))', gap: '2.5rem' }}>
-            {[
-              { type: 'Project Based', price: 'Fixed', desc: 'Best for specific projects with a clear scope and deadline.', features: ['Full Project Discovery', 'Dedicated Design Team', 'Unlimited Revisions', 'Launch Support'] },
-              { type: 'Retainer', price: 'Monthly', desc: 'Continuous support for growing brands that need ongoing creative.', features: ['Priority Support', 'Weekly Strategy Sync', 'Flexible Scope', 'Monthly Audit'] },
-              { type: 'Staff Aug', price: 'On-Demand', desc: 'Inject expert talent directly into your existing team.', features: ['Scalable Resources', 'Technical Expertise', 'Seamless Integration', 'Immediate Start'] }
-            ].map((pkg, i) => (
-              <div key={i} className="glass-strong" style={{ padding: '4rem 3rem', borderRadius: 32, border: i === 1 ? '1px solid var(--primary)' : '1px solid rgba(255,255,255,0.05)', position: 'relative' }}>
-                {i === 1 && <div style={{ position: 'absolute', top: -15, left: '50%', transform: 'translateX(-50%)', background: 'var(--primary)', color: '#fff', padding: '0.4rem 1.2rem', borderRadius: '20px', fontSize: '0.8rem', fontWeight: 700, textTransform: 'uppercase' }}>Most Popular</div>}
-                <div style={{ fontSize: '1rem', color: 'var(--primary)', fontWeight: 700, marginBottom: '0.5rem' }}>{pkg.price}</div>
-                <h3 style={{ fontSize: '2.2rem', fontWeight: 800, marginBottom: '1rem' }}>{pkg.type}</h3>
-                <p style={{ color: 'var(--text-muted)', marginBottom: '2.5rem', minHeight: '60px' }}>{pkg.desc}</p>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', marginBottom: '3rem' }}>
-                  {pkg.features.map((f, idx) => (
-                    <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '1rem', fontSize: '1.05rem' }}>
-                      <CheckCircle2 size={18} color="var(--primary)" /> {f}
-                    </div>
-                  ))}
-                </div>
-                <button className={i === 1 ? 'btn-primary' : 'btn-outline'} style={{ width: '100%', justifyContent: 'center', padding: '1.2rem' }}>Get Started</button>
-              </div>
-            ))}
-          </div>
         </div>
       </div>
 

@@ -149,7 +149,7 @@ const AboutPage = () => {
         </div>
 
         {/* ── SECTION 4: THE PHILOSOPHY ── */}
-        <div style={{ marginBottom: '15rem' }}>
+        <div style={{ marginBottom: '4rem' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '5rem', flexWrap: 'wrap', gap: '2rem' }}>
             <EditableText pageId="about" fieldId="philosophyTitle" initialText={content.philosophyTitle} tagName="h2" style={{ fontSize: '3.5rem', fontWeight: 900, letterSpacing: '-0.03em' }} />
             <EditableText pageId="about" fieldId="philosophySub" initialText={content.philosophySub} tagName="p" style={{ maxWidth: '450px', color: 'var(--text-muted)', fontSize: '1.2rem', lineHeight: 1.7 }} />

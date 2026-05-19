@@ -21,7 +21,7 @@ export const submitContactForm = async (formData, source = 'unknown', recipients
 
     // 2. Generate mailto link (No external API needed)
     // Use the provided recipients if available, otherwise fallback to hardcoded defaults
-    const mailTo = recipients || 'hello@creatisk.in, kapil.webfoxtech@gmail.com';
+    const mailTo = recipients || 'hello@creatisk.in';
     
     const subject = encodeURIComponent(`New Inquiry from ${formData.name || 'Creatisk Website'}`);
     const body = encodeURIComponent(

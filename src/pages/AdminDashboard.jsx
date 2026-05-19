@@ -50,7 +50,7 @@ const AdminDashboard = () => {
   const [globalSettings, setGlobalSettings] = useState({ 
     theme: 'dark', 
     gradientIndex: 0,
-    notificationEmails: 'hello@creatisk.in, kapil.webfoxtech@gmail.com',
+    notificationEmails: 'hello@creatisk.in',
     heroBgMode: 'theme',
     heroBgColor: '#ffffff',
     heroOpacity: 0.75,
@@ -537,7 +537,7 @@ const AdminDashboard = () => {
                   type="text" 
                   value={globalSettings.notificationEmails || ''} 
                   onChange={(e) => setGlobalSettings({...globalSettings, notificationEmails: e.target.value})}
-                  placeholder="hello@creatisk.in, kapil.webfoxtech@gmail.com"
+                  placeholder="hello@creatisk.in"
                   className="input-glass"
                   style={{ padding: '0.75rem 1.25rem' }}
                 />

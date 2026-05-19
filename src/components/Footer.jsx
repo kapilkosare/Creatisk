@@ -4,13 +4,16 @@ import { usePageContent } from '../hooks/usePageContent';
 import { useGlobalSettings } from '../hooks/useGlobalSettings';
 import { useState } from 'react';
 import { submitContactForm } from '../utils/formHandler';
+import { useLocation } from 'react-router-dom';
 
 const Footer = () => {
+  const location = useLocation();
+  const isContactPage = location.pathname === '/contact';
+
   const { content } = usePageContent('home', {
     ctaHeading: 'Got a project that needs our magic touch?',
     ctaSub: "Leave your details and let's create something extraordinary together. We respond within 24 hours.",
     footerEmail: 'hello@creatisk.in',
-    footerBy: 'by Kapil Kosare',
     footerCopyright: 'Creatisk. All rights reserved.'
   });
 
@@ -43,7 +46,8 @@ const Footer = () => {
   return (
     <>
       {/* ── PRE-FOOTER CTA ────────────────────────────────── */}
-      <section style={{ padding: '8rem 0', position: 'relative', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
+      {!isContactPage && (
+        <section style={{ padding: '8rem 0', position: 'relative', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
         <div className="orb orb-pink" style={{ bottom: '-10%', right: '-5%', opacity: 0.4 }} />
         <div className="container" style={{ position: 'relative', zIndex: 1 }}>
           <div className="glass-strong" style={{ 
@@ -123,6 +127,7 @@ const Footer = () => {
           </div>
         </div>
       </section>
+      )}
 
       {/* ── MAIN FOOTER ────────────────────────────────────── */}
       <footer style={{ padding: '4rem 0 2rem', overflow: 'hidden', background: 'var(--footer-bg)' }}>
@@ -139,7 +144,7 @@ const Footer = () => {
           }}>
             <div style={{ display: 'flex', gap: '2.5rem' }}>
               <a 
-                href="https://www.behance.net/kapilkosare" 
+                href="https://www.behance.net" 
                 target="_blank" 
                 rel="noopener noreferrer" 
                 style={{ color: 'var(--text-muted)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.5rem', transition: 'color 0.3s' }}
@@ -149,7 +154,7 @@ const Footer = () => {
                 Behance
               </a>
               <a 
-                href="https://www.linkedin.com/in/kapilkosare/" 
+                href="https://www.linkedin.com" 
                 target="_blank" 
                 rel="noopener noreferrer" 
                 style={{ color: 'var(--text-muted)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.5rem', transition: 'color 0.3s' }}
@@ -161,7 +166,6 @@ const Footer = () => {
             </div>
             <div style={{ color: 'var(--text-muted)', textAlign: 'right' }}>
               <EditableText pageId="home" fieldId="footerEmail" initialText={content.footerEmail} tagName="div" />
-              <EditableText pageId="home" fieldId="footerBy" initialText={content.footerBy} tagName="div" style={{ marginTop: '0.25rem' }} />
             </div>
           </div>
           <div className="footer-logo-text">CREATISK.</div>
