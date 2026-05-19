@@ -207,7 +207,7 @@ const Navbar = ({ user }) => {
             </div>
             
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-              <a href="mailto:hello@creatisk.in" style={{ color: 'var(--text-main)', textDecoration: 'none', fontSize: '1.4rem', fontWeight: 500, transition: 'color 0.3s' }}>hello@creatisk.in</a>
+              <a href="mailto:hello@creatisk.in" style={{ color: '#ffffff', textDecoration: 'none', fontSize: '1.4rem', fontWeight: 500, transition: 'color 0.3s' }}>hello@creatisk.in</a>
               <div style={{ display: 'flex', gap: '1rem' }}>
                 {[Globe, MessageCircle, Share2, Send].map((Icon, i) => (
                   <div key={i} className="hover-scale" style={{
